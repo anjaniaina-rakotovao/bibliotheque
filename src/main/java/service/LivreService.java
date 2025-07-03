@@ -26,7 +26,10 @@ public class LivreService {
         livreRepository.deleteById(id);
     }
 
-    
+    public LivreEntity findById(Integer id) {
+        return livreRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Livre introuvable"));
+    }
 
     // public List<LivreEntity> findByCategorieAge(Integer idCategorie) {
     //     return livreRepository.findByCategorieAge_IdCategorieAge(idCategorie);

@@ -11,6 +11,8 @@
     <a href="creationAdherent">Création d'adherent</a>
     <a href="#">Pret de livre par un adherent</a>
     <a href="listelivre">Bibliotheque</a>
-</body>
+    <a href="createPret">AJouter un prêt</a>
 
-</html>
+</body>z
+
+</html>a

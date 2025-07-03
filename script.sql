@@ -88,3 +88,14 @@ INSERT INTO exemplaire (idLivre, nbExemplaire) VALUES
 (9, 3),   
 (10, 10); 
 
+INSERT INTO statutPret (statut) VALUES ('EnCours');
+INSERT INTO statutPret (statut) VALUES ('Rendu');
+
+INSERT INTO typePret (typePret) VALUES ('SurPlace');
+INSERT INTO typePret (typePret) VALUES ('Emporte');
+
+INSERT INTO livreProfil (idLivre, idProfil)
+SELECT idLivre, idProfil FROM livre, profil
+WHERE idProfil IN (1,2,3,4); -- ou ce que tu veux
+
+

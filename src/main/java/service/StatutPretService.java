@@ -1,35 +1,19 @@
 package service;
 
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import entities.StatutPretEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import repository.StatutPretRepository;
+
+import java.util.Optional;
 
 public class StatutPretService {
 
+    @Autowired
     private StatutPretRepository statutPretRepository;
 
-    @Autowired
-    public void setStatutPretRepository(StatutPretRepository statutPretRepository) {
-        this.statutPretRepository = statutPretRepository;
+    public Optional<StatutPretEntity> findByStatut(String statut) {
+        return statutPretRepository.findByStatut(statut);
     }
-
-    public List<StatutPretEntity> findAll() {
-        return statutPretRepository.findAll();
-    }
-
-    public StatutPretEntity save(StatutPretEntity statut) {
-        return statutPretRepository.save(statut);
-    }
-
-    public void delete(Integer id) {
-        statutPretRepository.deleteById(id);
-    }
-
-
-
-    // public StatutPretEntity findByStatut(String statut) {
-    //     return statutPretRepository.findByStatut(statut);
-    // }
+    
 }

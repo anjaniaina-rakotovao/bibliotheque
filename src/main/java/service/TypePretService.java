@@ -26,7 +26,9 @@ public class TypePretService {
         typePretRepository.deleteById(id);
     }
 
-    // public TypePretEntity findByType(String typePret) {
-    //     return typePretRepository.findByTypePret(typePret);
-    // }
+   
+    public TypePretEntity findById(Integer id) {
+        return typePretRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Type de prêt introuvable"));
+    }
 }
