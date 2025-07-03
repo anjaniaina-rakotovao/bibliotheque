@@ -21,6 +21,17 @@ public class LivreEntity {
     @Column(name = "auteur")
     private String auteur;
 
+    @Column(name = "titre")
+    private String titre;
+
+    public String getTitre() {
+        return titre;
+    }
+
+    public void setTitre(String titre) {
+        this.titre = titre;
+    }
+
     @ManyToOne
     @JoinColumn(name = "idCategorieAge")
     private CategorieAgeEntity categorieAge;  // Changé de String à CategorieAgeEntity

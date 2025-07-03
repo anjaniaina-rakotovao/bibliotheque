@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import entities.ExemplaireEntity;
 import repository.ExemplaireRepository;
+import repository.PretRepository;
 
 public class ExemplaireService {
 
@@ -13,6 +14,8 @@ public class ExemplaireService {
     public void setExemplaireRepository(ExemplaireRepository exemplaireRepository) {
         this.exemplaireRepository = exemplaireRepository;
     }
+    @Autowired
+    private PretRepository pretRepository;
 
     public List<ExemplaireEntity> findAll() {
         return exemplaireRepository.findAll();
@@ -25,4 +28,20 @@ public class ExemplaireService {
     public void delete(Integer id) {
         exemplaireRepository.deleteById(id);
     }
+
+        public ExemplaireEntity getExemplaireDisponible(Integer idLivre) {
+        List<ExemplaireEntity> liste = exemplaireRepository.findByLivre_IdLivre(idLivre);
+        for (ExemplaireEntity ex : liste) {
+            long empruntes = pretRepository
+                    .countByExemplaire_IdExemplaireAndHistoriques_Statut_Statut(
+                            ex.getIdExemplaire(), "EnCours");
+            if (ex.getNbExemplaire() > empruntes) {
+                return ex;
+            }
+        }
+        return null; // aucun disponible
+
+        
+    }
+
 }

@@ -13,6 +13,7 @@
                         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
 >
     <bean id="adherentService" class="service.AdherentService" />
+    <bean id="livreService" class="service.LivreService" />
     <bean id="categorieAgeService" class="service.CategorieAgeService" />
     <bean id="exemplaireService" class="service.ExemplaireService" />
     <bean id="tagService" class="service.TagService" />
@@ -21,6 +22,12 @@
     <bean id="inscriptionService" class="service.InscriptionService" />
     <bean id="profilService" class="service.ProfilService" />
     <bean id="statutAdherentService" class="service.StatutAdherentService" />
+    <bean id="historiquePretService" class="service.HistoriquePretService" />
+    <bean id="pretService" class="service.PretService" />
+    <bean id="typePretService" class="service.TypePretService" />
+    <bean id="statutPretService" class="service.StatutPretService" />
+    <bean id="historiquePenaliteService" class="service.HistoriquePenaliteService" />
+
 
 
     <context:annotation-config />
@@ -46,7 +53,8 @@
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.format_sql">true</prop>
                 <!-- Propriétés mises à jour avec jakarta.persistence -->
-                <prop key="jakarta.persistence.jdbc.url">jdbc:postgresql://localhost:5432/bibliotheque</prop>
+                <prop key="jakarta.persistence.jdbc.url">
+                    jdbc:postgresql://localhost:5432/bibliotheque</prop>
                 <prop key="jakarta.persistence.jdbc.driver">org.postgresql.Driver</prop>
                 <prop key="jakarta.persistence.jdbc.user">postgres</prop>
                 <prop key="jakarta.persistence.jdbc.password">root</prop>

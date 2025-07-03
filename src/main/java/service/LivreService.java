@@ -26,6 +26,10 @@ public class LivreService {
         livreRepository.deleteById(id);
     }
 
+    public LivreEntity findById(Integer id) {
+        return livreRepository.findById(id).orElse(null);
+    }
+
     // public List<LivreEntity> findByCategorieAge(Integer idCategorie) {
     //     return livreRepository.findByCategorieAge_IdCategorieAge(idCategorie);
     // }
