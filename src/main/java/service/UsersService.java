@@ -25,4 +25,19 @@ public class UsersService {
     public void delete(Integer id) {
         usersRepository.deleteById(id);
     }
+
+    public boolean authenticate(String username, String password) {
+        Optional<UsersEntity> user = usersRepository.findByUserNameAndMotDePasse(username, password);
+        return user.isPresent();
+    }
+
+    // Nouvelle méthode pour récupérer l'utilisateur
+    public Optional<UsersEntity> getUserByCredentials(String username, String password) {
+        return usersRepository.findByUserNameAndMotDePasse(username, password);
+    }
+
+    // Méthode pour trouver par username seulement
+    public Optional<UsersEntity> findByUsername(String username) {
+        return usersRepository.findByUserName(username);
+    }
 }

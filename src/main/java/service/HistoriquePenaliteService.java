@@ -26,7 +26,7 @@ public class HistoriquePenaliteService {
         historiquePenaliteRepository.deleteById(id);
     }
 
-    public List<HistoriquePenaliteEntity> findByAdherent(Integer idAdherent) {
-        return historiquePenaliteRepository.findByAdherent_IdAdherent(idAdherent);
-    }
+    // public List<HistoriquePenaliteEntity> findByAdherent(Integer idAdherent) {
+    //     return historiquePenaliteRepository.findByAdherent_IdAdherent(idAdherent);
+    // }
 }

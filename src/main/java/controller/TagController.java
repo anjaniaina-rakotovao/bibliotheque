@@ -19,10 +19,10 @@ public class TagController {
     @Autowired
     private TagService tagService;
 
-    @GetMapping("/")
-    public String listerTag(Model model){
-        List<TagEntity> tags = tagService.findAll();
-        model.addAttribute("listTag", tags);
-        return "home";
-    }
+    // @GetMapping("/")
+    // public String listerTag(Model model){
+    //     List<TagEntity> tags = tagService.findAll();
+    //     model.addAttribute("listTag", tags);
+    //     return "home";
+    // }
 }

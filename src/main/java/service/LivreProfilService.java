@@ -26,11 +26,11 @@ public class LivreProfilService {
         livreProfilRepository.deleteById(id);
     }
 
-    public List<LivreProfilEntity> findByProfil(Integer idProfil) {
-        return livreProfilRepository.findByProfil_IdProfil(idProfil);
-    }
+//     public List<LivreProfilEntity> findByProfil(Integer idProfil) {
+//         return livreProfilRepository.findByProfil_IdProfil(idProfil);
+//     }
 
-    public List<LivreProfilEntity> findByLivre(Integer idLivre) {
-        return livreProfilRepository.findByLivre_IdLivre(idLivre);
-    }
+//     public List<LivreProfilEntity> findByLivre(Integer idLivre) {
+//         return livreProfilRepository.findByLivre_IdLivre(idLivre);
+//     }
 }

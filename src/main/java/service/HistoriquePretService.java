@@ -26,7 +26,7 @@ public class HistoriquePretService {
         historiquePretRepository.deleteById(id);
     }
 
-    public List<HistoriquePretEntity> findByPret(Integer idPret) {
-        return historiquePretRepository.findByPret_IdPret(idPret);
-    }
+    // public List<HistoriquePretEntity> findByPret(Integer idPret) {
+    //     return historiquePretRepository.findByPret_IdPret(idPret);
+    // }
 }

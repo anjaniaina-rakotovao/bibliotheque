@@ -26,7 +26,7 @@ public class InscriptionService {
         inscriptionRepository.deleteById(id);
     }
 
-    public List<InscriptionEntity> findActiveSubscriptions() {
-        return inscriptionRepository.findByDateFinAbonnementAfter(java.time.LocalDate.now());
-    }
+    // public List<InscriptionEntity> findActiveSubscriptions() {
+    //     return inscriptionRepository.findByDateFinAbonnementAfter(java.time.LocalDate.now());
+    // }
 }

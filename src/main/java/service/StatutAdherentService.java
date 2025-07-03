@@ -26,7 +26,7 @@ public class StatutAdherentService {
         statutAdherentRepository.deleteById(id);
     }
 
-    public StatutAdherentEntity findByStatut(String statut) {
-        return statutAdherentRepository.findByStatut(statut);
-    }
+    // public StatutAdherentEntity findByStatut(String statut) {
+    //     return statutAdherentRepository.findByStatut(statut);
+    // }
 }
