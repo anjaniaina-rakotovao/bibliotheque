@@ -16,7 +16,9 @@
                 <body>
                     <h2>Page d'inscription</h2>
                     <form action="inscription" method="post">
+                        <p>Username</p>
                         <input type="text" name="username">
+                        <p>Mot de Passe</p>
                         <input type="password" name ="motdepasse">
                         <select name="typeaccount" id="">
                             <% for (TypeAccountEntity tag : tags) { %>
@@ -25,15 +27,7 @@
                         </select>
                         <input type="submit">
                     </form>
-                    <li>
-                        <ul>
-                            <% for (TypeAccountEntity tag : tags) { %>
-                                <li>
-                                    <%= tag.getAccountType() %>
-                                </li>
-                                <% } %>
-                        </ul>
-                    </li>
+        
                 </body>
 
                 </html>

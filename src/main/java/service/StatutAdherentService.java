@@ -3,6 +3,7 @@ package service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import entities.StatutAdherentEntity;
+import entities.StatutPretEntity;
 import repository.StatutAdherentRepository;
 
 public class StatutAdherentService {
@@ -24,6 +25,11 @@ public class StatutAdherentService {
 
     public void delete(Integer id) {
         statutAdherentRepository.deleteById(id);
+    }
+
+    public StatutAdherentEntity findById(Integer id) {
+        return statutAdherentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Statut non trouvé avec l'ID: " + id));
     }
 
     // public StatutAdherentEntity findByStatut(String statut) {

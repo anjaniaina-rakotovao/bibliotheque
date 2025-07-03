@@ -1,6 +1,8 @@
 package entities;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -25,6 +27,9 @@ public class AdherentEntity {
     @ManyToOne
     @JoinColumn(name = "statut")
     private StatutAdherentEntity statut;
+
+    @Column(name = "dateNaissance")  // Nouveau champ
+    private LocalDate dateNaissance;
 
     @OneToMany(mappedBy = "adherent")
     private List<PretEntity> prets;
@@ -99,5 +104,13 @@ public class AdherentEntity {
 
     public void setHistoriqueStatuts(List<HistoriqueStatutAdherentEntity> historiqueStatuts) {
         this.historiqueStatuts = historiqueStatuts;
+    }
+
+    public LocalDate getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public void setDateNaissance(LocalDate dateNaissance) {
+        this.dateNaissance = dateNaissance;
     }
 }

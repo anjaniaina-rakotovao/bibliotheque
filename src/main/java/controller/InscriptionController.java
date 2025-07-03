@@ -11,8 +11,11 @@ import entities.InscriptionEntity;
 import entities.TypeAccountEntity;
 import entities.TypeAccountEntity;
 import entities.UsersEntity;
+import entities.ProfilEntity;
+
 import jakarta.servlet.http.HttpServletRequest;
 import service.InscriptionService;
+import service.ProfilService;
 import service.TypeAccountService;
 import service.UsersService;
 import java.util.List;
@@ -25,6 +28,8 @@ public class InscriptionController {
     private UsersService usersService;
     @Autowired
     private TypeAccountService typeAccountService;
+    @Autowired
+    private ProfilService profilService;
 
     @RequestMapping(value = "/inscription", method = RequestMethod.GET)
     public String showInscriptionForm(Model model) {
@@ -55,24 +60,37 @@ public class InscriptionController {
         }
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/loginuser", method = RequestMethod.GET)
     public String showLoginForm(Model model) {
         return "login";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public  handleLoginUsers(HttpServletRequest request, Model model) {
+    @RequestMapping(value = "/loginuser", method = RequestMethod.POST)
+    public String handleLoginUsers(HttpServletRequest request, Model model) {
         String username = request.getParameter("username");
         String motdepasse = request.getParameter("motdepasse");
 
+        if (username == null || username.trim().isEmpty()
+                || motdepasse == null || motdepasse.trim().isEmpty()) {
+            model.addAttribute("error", "Nom d'utilisateur et mot de passe sont requis");
+            return "login";
+        }
+
         try {
             if (usersService.authenticate(username, motdepasse)) {
-                return "accueil";
-            }
 
+                UsersEntity user = usersService.getUserByCredentials(username, motdepasse)
+                        .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                request.getSession().setAttribute("currentUser", user);
+                return "accueil";
+            } else {
+                model.addAttribute("error", "Identifiants incorrects");
+                return "login";
+            }
         } catch (RuntimeException e) {
-            model.addAttribute("error", "Type de compte invalide");
-            return "home";
+            model.addAttribute("error", "Erreur d'authentification: " + e.getMessage());
+            return "login";
         }
     }
+
 }

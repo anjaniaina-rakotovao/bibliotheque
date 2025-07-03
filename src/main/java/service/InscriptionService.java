@@ -8,6 +8,7 @@ import repository.InscriptionRepository;
 public class InscriptionService {
 
     private InscriptionRepository inscriptionRepository;
+    
 
     @Autowired
     public void setInscriptionRepository(InscriptionRepository inscriptionRepository) {

@@ -2,6 +2,7 @@ package service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import entities.StatutPretEntity;
 import repository.StatutPretRepository;
 
@@ -25,6 +26,8 @@ public class StatutPretService {
     public void delete(Integer id) {
         statutPretRepository.deleteById(id);
     }
+
+
 
     // public StatutPretEntity findByStatut(String statut) {
     //     return statutPretRepository.findByStatut(statut);
