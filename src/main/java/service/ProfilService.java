@@ -26,6 +26,11 @@ public class ProfilService {
         profilRepository.deleteById(id);
     }
 
+    public ProfilEntity findById(Integer id) {
+        return profilRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Profil non trouvé avec l'ID: " + id));
+    }
+
     // public ProfilEntity findByType(String profilType) {
     //     return profilRepository.findByProfilType(profilType);
     // }
