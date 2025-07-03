@@ -26,7 +26,7 @@ public class ProfilService {
         profilRepository.deleteById(id);
     }
 
-    public ProfilEntity findByType(String profilType) {
-        return profilRepository.findByProfilType(profilType);
-    }
+    // public ProfilEntity findByType(String profilType) {
+    //     return profilRepository.findByProfilType(profilType);
+    // }
 }

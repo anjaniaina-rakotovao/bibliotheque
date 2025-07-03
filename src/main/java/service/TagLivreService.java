@@ -26,11 +26,11 @@ public class TagLivreService {
         tagLivreRepository.deleteById(id);
     }
 
-    public List<TagLivreEntity> findByLivre(Integer idLivre) {
-        return tagLivreRepository.findByLivre_IdLivre(idLivre);
-    }
+    // public List<TagLivreEntity> findByLivre(Integer idLivre) {
+    //     return tagLivreRepository.findByLivre_IdLivre(idLivre);
+    // }
 
-    public List<TagLivreEntity> findByTag(Integer idTag) {
-        return tagLivreRepository.findByTag_IdTag(idTag);
-    }
+    // public List<TagLivreEntity> findByTag(Integer idTag) {
+    //     return tagLivreRepository.findByTag_IdTag(idTag);
+    // }
 }

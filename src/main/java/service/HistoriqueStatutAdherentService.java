@@ -26,7 +26,7 @@ public class HistoriqueStatutAdherentService {
         historiqueStatutAdherentRepository.deleteById(id);
     }
 
-    public List<HistoriqueStatutAdherentEntity> findByAdherent(Integer idAdherent) {
-        return historiqueStatutAdherentRepository.findByAdherent_IdAdherent(idAdherent);
-    }
+    // public List<HistoriqueStatutAdherentEntity> findByAdherent(Integer idAdherent) {
+    //     return historiqueStatutAdherentRepository.findByAdherent_IdAdherent(idAdherent);
+    // }
 }

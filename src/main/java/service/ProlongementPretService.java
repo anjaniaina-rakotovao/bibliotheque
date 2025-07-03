@@ -26,7 +26,7 @@ public class ProlongementPretService {
         prolongementPretRepository.deleteById(id);
     }
 
-    public List<ProlongementPretEntity> findByPret(Integer idPret) {
-        return prolongementPretRepository.findByPret_IdPret(idPret);
-    }
+    // public List<ProlongementPretEntity> findByPret(Integer idPret) {
+    //     return prolongementPretRepository.findByPret_IdPret(idPret);
+    // }
 }

@@ -26,7 +26,7 @@ public class StatutPretService {
         statutPretRepository.deleteById(id);
     }
 
-    public StatutPretEntity findByStatut(String statut) {
-        return statutPretRepository.findByStatut(statut);
-    }
+    // public StatutPretEntity findByStatut(String statut) {
+    //     return statutPretRepository.findByStatut(statut);
+    // }
 }

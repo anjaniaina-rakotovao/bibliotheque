@@ -13,6 +13,10 @@
                         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
 >
     <bean id="tagService" class="service.TagService" />
+    <bean id="typeAccountService" class="service.TypeAccountService" />
+    <bean id="usersService" class="service.UsersService" />
+    <bean id="inscriptionService" class="service.InscriptionService" />
+
     <context:annotation-config />
     <context:component-scan base-package="repository, services, entities" />
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">

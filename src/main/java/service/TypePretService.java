@@ -26,7 +26,7 @@ public class TypePretService {
         typePretRepository.deleteById(id);
     }
 
-    public TypePretEntity findByType(String typePret) {
-        return typePretRepository.findByTypePret(typePret);
-    }
+    // public TypePretEntity findByType(String typePret) {
+    //     return typePretRepository.findByTypePret(typePret);
+    // }
 }
