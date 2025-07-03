@@ -99,7 +99,6 @@ public class AdherentController {
 
         List<ProfilEntity> profils = profilService.findAll();
         model.addAttribute("profils", profils);
-
         return "form-adherent";
     }
 

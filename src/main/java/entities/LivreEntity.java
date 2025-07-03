@@ -7,6 +7,7 @@ import java.util.List;
 @Entity
 @Table(name = "livre")
 public class LivreEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idLivre")
@@ -20,6 +21,9 @@ public class LivreEntity {
 
     @Column(name = "auteur")
     private String auteur;
+    
+    @Column(name = "titre")
+    private String titre;
 
     @ManyToOne
     @JoinColumn(name = "idCategorieAge")
@@ -34,7 +38,8 @@ public class LivreEntity {
     @OneToMany(mappedBy = "livre")
     private List<LivreProfilEntity> livreProfils;
 
-    public LivreEntity() {}
+    public LivreEntity() {
+    }
 
     // Getters et setters
     public Integer getIdLivre() {
@@ -99,5 +104,13 @@ public class LivreEntity {
 
     public void setLivreProfils(List<LivreProfilEntity> livreProfils) {
         this.livreProfils = livreProfils;
+    }
+
+    public String getTitre() {
+        return titre;
+    }
+
+    public void setTitre(String titre) {
+        this.titre = titre;
     }
 }

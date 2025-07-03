@@ -13,6 +13,7 @@
                         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
 >
     <bean id="adherentService" class="service.AdherentService" />
+    <bean id="livreService" class="service.LivreService" />
     <bean id="categorieAgeService" class="service.CategorieAgeService" />
     <bean id="exemplaireService" class="service.ExemplaireService" />
     <bean id="tagService" class="service.TagService" />
