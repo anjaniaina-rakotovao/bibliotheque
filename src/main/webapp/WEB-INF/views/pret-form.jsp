@@ -466,6 +466,8 @@
                                                             </li>
                                                             <li><a href="createPret" class="nav-link">Preter un
                                                                     livre</a></li>
+                                                            <li><a href="prolongement" class="nav-link">Faire un prolongement</a></li>
+
 
                                                         </ul>
                                                     </div>
@@ -474,58 +476,80 @@
                                                 <div class="main-container">
                                                     <div class="card">
                                                         <h2>Création d'un nouveau prêt</h2>
-
-                                                        <form action="createPret" method="post">
-                                                            <div class="form-group">
-                                                                <label for="idAdherent">Adhérent</label>
-                                                                <select name="idAdherent" id="idAdherent"
-                                                                    class="form-control" required>
-                                                                    <option value="">-- Sélectionner un adhérent --
-                                                                    </option>
-                                                                    <% for (AdherentEntity adherent : adherents) { %>
-                                                                        <option value="<%= adherent.getIdAdherent() %>">
-                                                                            <%= adherent.getAdherentName() %>
-                                                                        </option>
-                                                                        <% } %>
-                                                                </select>
+                                                        <% if (request.getAttribute("messageError") !=null) { %>
+                                                            <div class="message error">
+                                                                <%= request.getAttribute("messageError") %>
                                                             </div>
+                                                            <% } else if (request.getAttribute("messageSuccess") !=null)
+                                                                { %>
+                                                                <div class="message success">
+                                                                    <%= request.getAttribute("messageSuccess") %>
+                                                                </div>
+                                                                <% } %>
 
-                                                            <div class="form-group">
-                                                                <label for="idLivre">Livre à prêter</label>
-                                                                <select name="idLivre" id="idLivre" class="form-control"
-                                                                    required>
-                                                                    <option value="">-- Sélectionner un livre --
-                                                                    </option>
-                                                                    <% for (LivreEntity livre : livres) { %>
-                                                                        <option value="<%= livre.getIdLivre() %>">
-                                                                            📚 <%= livre.getTitre() %>
-                                                                        </option>
-                                                                        <% } %>
-                                                                </select>
-                                                            </div>
 
-                                                            <div class="form-group">
-                                                                <label for="idTypePret">Type de prêt</label>
-                                                                <select name="idTypePret" id="idTypePret"
-                                                                    class="form-control" required>
-                                                                    <option value="">-- Sélectionner le type --</option>
-                                                                    <% for (TypePretEntity typePret : typePrets) { %>
-                                                                        <option value="<%= typePret.getIdTypePret() %>">
-                                                                            <%= typePret.getTypePret() %>
-                                                                        </option>
-                                                                        <% } %>
-                                                                </select>
-                                                            </div>
+                                                                    <form action="createPret" method="post">
+                                                                        <div class="form-group">
+                                                                            <label for="idAdherent">Adhérent</label>
+                                                                            <select name="idAdherent" id="idAdherent"
+                                                                                class="form-control" required>
+                                                                                <option value="">-- Sélectionner un
+                                                                                    adhérent --
+                                                                                </option>
+                                                                                <% for (AdherentEntity adherent :
+                                                                                    adherents) { %>
+                                                                                    <option
+                                                                                        value="<%= adherent.getIdAdherent() %>">
+                                                                                        <%= adherent.getAdherentName()
+                                                                                            %>
+                                                                                    </option>
+                                                                                    <% } %>
+                                                                            </select>
+                                                                        </div>
 
-                                                            <div class="form-group">
-                                                                <label for="datePret">Date du prêt</label>
-                                                                <input type="date" id="datePret" name="datePret"
-                                                                    class="form-control" required>
-                                                            </div>
+                                                                        <div class="form-group">
+                                                                            <label for="idLivre">Livre à prêter</label>
+                                                                            <select name="idLivre" id="idLivre"
+                                                                                class="form-control" required>
+                                                                                <option value="">-- Sélectionner un
+                                                                                    livre --
+                                                                                </option>
+                                                                                <% for (LivreEntity livre : livres) { %>
+                                                                                    <option
+                                                                                        value="<%= livre.getIdLivre() %>">
+                                                                                        📚 <%= livre.getTitre() %>
+                                                                                    </option>
+                                                                                    <% } %>
+                                                                            </select>
+                                                                        </div>
 
-                                                            <button type="submit" class="btn btn-primary">Valider le
-                                                                prêt</button>
-                                                        </form>
+                                                                        <div class="form-group">
+                                                                            <label for="idTypePret">Type de prêt</label>
+                                                                            <select name="idTypePret" id="idTypePret"
+                                                                                class="form-control" required>
+                                                                                <option value="">-- Sélectionner le type
+                                                                                    --</option>
+                                                                                <% for (TypePretEntity typePret :
+                                                                                    typePrets) { %>
+                                                                                    <option
+                                                                                        value="<%= typePret.getIdTypePret() %>">
+                                                                                        <%= typePret.getTypePret() %>
+                                                                                    </option>
+                                                                                    <% } %>
+                                                                            </select>
+                                                                        </div>
+
+                                                                        <div class="form-group">
+                                                                            <label for="datePret">Date du prêt</label>
+                                                                            <input type="date" id="datePret"
+                                                                                name="datePret" class="form-control"
+                                                                                required>
+                                                                        </div>
+
+                                                                        <button type="submit"
+                                                                            class="btn btn-primary">Valider le
+                                                                            prêt</button>
+                                                                    </form>
                                                     </div>
                                                 </div>
                                             </body>
