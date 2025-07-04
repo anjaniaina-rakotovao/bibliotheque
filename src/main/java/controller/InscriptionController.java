@@ -65,6 +65,13 @@ public class InscriptionController {
         return "login";
     }
 
+     @RequestMapping(value = "/accueil", method = RequestMethod.GET)
+    public String showForm(Model model) {
+        return "accueil";
+    }
+
+    
+
     @RequestMapping(value = "/loginuser", method = RequestMethod.POST)
     public String handleLoginUsers(HttpServletRequest request, Model model) {
         String username = request.getParameter("username");

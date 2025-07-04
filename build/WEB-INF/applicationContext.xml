@@ -27,6 +27,7 @@
     <bean id="typePretService" class="service.TypePretService" />
     <bean id="statutPretService" class="service.StatutPretService" />
     <bean id="historiquePenaliteService" class="service.HistoriquePenaliteService" />
+    <bean id="prolongementPretService" class="service.ProlongementPretService" />
 
 
 

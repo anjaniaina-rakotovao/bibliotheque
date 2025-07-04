@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <%@ page import="entities.TypeAccountEntity" %>
     <%@ page import="java.util.List" %>
 
@@ -19,15 +21,17 @@
                         <p>Username</p>
                         <input type="text" name="username">
                         <p>Mot de Passe</p>
-                        <input type="password" name ="motdepasse">
+                        <input type="password" name="motdepasse">
                         <select name="typeaccount" id="">
                             <% for (TypeAccountEntity tag : tags) { %>
-                            <option value="<%= tag.getIdTypeAccount() %>"><%= tag.getAccountType() %></option>
-                            <% } %>
+                                <option value="<%= tag.getIdTypeAccount() %>">
+                                    <%= tag.getAccountType() %>
+                                </option>
+                                <% } %>
                         </select>
                         <input type="submit">
                     </form>
-        
+
                 </body>
 
                 </html>

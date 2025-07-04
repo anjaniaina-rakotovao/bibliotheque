@@ -17,6 +17,7 @@ import entities.HistoriquePenaliteEntity;
 import entities.HistoriquePretEntity;
 import entities.LivreEntity;
 import entities.PretEntity;
+import entities.ProlongementPretEntity;
 import entities.StatutPretEntity;
 import entities.TypePretEntity;
 import repository.AdherentRepository;
@@ -25,6 +26,8 @@ import repository.PretRepository;
 import repository.StatutPretRepository;
 import repository.HistoriquePenaliteRepository;
 import repository.HistoriquePretRepository;
+import repository.ProlongementPretRepository;
+
 
 public class PretService {
 
@@ -45,6 +48,9 @@ public class PretService {
 
     @Autowired
     private HistoriquePretRepository historiquePretRepository;
+
+    @Autowired
+    private ProlongementPretRepository prolongementPretRepository;
 
 
 
@@ -199,4 +205,45 @@ public class PretService {
                 .filter(this::isEnCours) // garde seulement les statuts "EnCours"
                 .toList();
     }
+
+    public LocalDate calculerDateFinEffective(PretEntity pret) {
+    // 1. durée initiale selon le type de prêt
+    int dureeInitiale = 28; 
+    LocalDate datePret = pret.getDatePret();
+    LocalDate dateFin = datePret.plusDays(dureeInitiale);
+
+    // 2. ajouter les prolongements si existants
+    List<ProlongementPretEntity> prolongements = prolongementPretRepository.findAll()
+        .stream().filter(p -> p.getPret().getIdPret().equals(pret.getIdPret()))
+        .toList();
+
+    for (ProlongementPretEntity p : prolongements) {
+        dateFin = dateFin.plusDays(p.getDuree());
+    }
+
+    return dateFin;
+}
+
+ @Transactional
+    public LocalDate prolongerPret(Integer idPret, Integer dureeJours) {
+
+        PretEntity pret = pretRepository.findById(idPret)
+            .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+
+        if (!isEnCours(pret))
+            throw new RuntimeException("Ce prêt n'est plus en cours.");
+
+        if (dureeJours < 1 || dureeJours > 30)
+            throw new RuntimeException("Prolongation entre 1 et 30 jours.");
+
+        // Historiser la prolongation
+        ProlongementPretEntity prolong = new ProlongementPretEntity();
+        prolong.setPret(pret);
+        prolong.setDuree(dureeJours);
+        prolongementPretRepository.save(prolong);
+
+        // Retourner la nouvelle date de fin (en recalculant)
+        return calculerDateFinEffective(pret);
+    }
+
 }
