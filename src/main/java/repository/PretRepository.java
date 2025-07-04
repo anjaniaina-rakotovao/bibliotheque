@@ -20,4 +20,6 @@ public interface PretRepository extends JpaRepository<PretEntity, Integer> {
     long countByExemplaire_IdExemplaireAndHistoriques_Statut_Statut(
             Integer idExemplaire, String statut);
 
+    List<PretEntity> findByAdherent_IdAdherent(Integer idAdherent);
+
 }
