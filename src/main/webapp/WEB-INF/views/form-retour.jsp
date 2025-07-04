@@ -455,6 +455,8 @@
                                             <li><a href="listelivre" class="nav-link">Liste des Livres</a></li>
                                             <li><a href="retour" class="nav-link">Retour de Livre</a></li>
                                             <li><a href="createPret" class="nav-link">Preter un livre</a></li>
+                                                            <li><a href="prolongement" class="nav-link">Faire un prolongement</a></li>
+
 
                                         </ul>
                                     </div>
