@@ -46,6 +46,8 @@ public class PretService {
     @Autowired
     private HistoriquePretRepository historiquePretRepository;
 
+
+
     public PretEntity save(PretEntity pret) {
         return pretRepository.save(pret);
     }
@@ -120,33 +122,41 @@ public class PretService {
 
     @Transactional
     public void effectuerRetour(Integer idPret, LocalDate dateRetour) {
-        PretEntity pret = findById(idPret);
 
+        PretEntity pret = pretRepository.findById(idPret)
+                .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+
+        /* --- Vérifier qu’il est encore EnCours --- */
         if (!isEnCours(pret)) {
-            throw new RuntimeException("Ce prêt n'est pas en cours ou déjà retourné.");
+            throw new RuntimeException("Ce prêt n’est plus en cours.");
         }
 
-        // délai depuis la date de prêt
+        /* --- Calcul du délai --- */
         long jours = ChronoUnit.DAYS.between(pret.getDatePret(), dateRetour);
 
-        if (jours > 28) {
-            // Pénalise l’adhérent (7 jours d’exemple)
-            HistoriquePenaliteEntity pen = new HistoriquePenaliteEntity();
-            pen.setAdherent(pret.getAdherent());
-            pen.setDateDebutPenalite(dateRetour);
-            pen.setDateFinPenalite(dateRetour.plusDays(7));
-            historiquePenaliteRepository.save(pen);
-        }
-
-        // Ajout historique « Rendu »
+        /* --- Ajouter l’historique “Rendu” --- */
         StatutPretEntity statutRendu = statutPretRepository.findByStatut("Rendu")
-                .orElseThrow(() -> new RuntimeException("Statut 'Rendu' non configuré"));
+                .orElseThrow(() -> new RuntimeException("Statut 'Rendu' manquant"));
 
         HistoriquePretEntity histo = new HistoriquePretEntity();
         histo.setPret(pret);
         histo.setStatut(statutRendu);
         histo.setDateStatut(dateRetour);
         historiquePretRepository.save(histo);
+
+        /* --- Pénalité si > 28 jours --- */
+        if (jours > 28) {
+            HistoriquePenaliteEntity pen = new HistoriquePenaliteEntity();
+            pen.setAdherent(pret.getAdherent());
+            pen.setDateDebutPenalite(dateRetour);
+            pen.setDateFinPenalite(dateRetour.plusDays(15));   // ex : 15 jours de blocage
+            historiquePenaliteRepository.save(pen);
+        }
+
+        /* --- Exemplaire de nouveau disponible ( si tu gères un stock ) --- */
+        ExemplaireEntity ex = pret.getExemplaire();
+        ex.setNbExemplaire(ex.getNbExemplaire() + 1);
+        exemplaireRepository.save(ex);
     }
 
     // Méthode utilitaire pour calculer l'âge
@@ -162,23 +172,19 @@ public class PretService {
     //     if (pret.getHistoriques() == null || pret.getHistoriques().isEmpty()) {
     //         return false;
     //     }
-
     //     // Dernier statut = celui avec la date la plus récente
     //     HistoriquePretEntity dernier = pret.getHistoriques().stream()
     //             .max(Comparator.comparing(HistoriquePretEntity::getDateStatut))
     //             .orElse(null);
-
     //     // Statut ID = 1 → "EnCours"
     //     return dernier != null && dernier.getStatut().getIdStatut() == 1;
     // }
-
     private boolean isEnCours(PretEntity pret) {
-    return pret.getHistoriques().stream()
-        .max(Comparator.comparing(HistoriquePretEntity::getDateStatut))
-        .map(h -> h.getStatut().getIdStatut() == 1)   // 1 = EnCours
-        .orElse(false);
-}
-
+        return pret.getHistoriques().stream()
+                .max(Comparator.comparing(HistoriquePretEntity::getDateStatut))
+                .map(h -> h.getStatut().getIdStatut() == 1) // 1 = EnCours
+                .orElse(false);
+    }
 
     @Transactional(readOnly = true)
     public List<PretEntity> getPretsEnCoursByAdherent(Integer idAdherent) {
