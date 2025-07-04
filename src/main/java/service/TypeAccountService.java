@@ -13,14 +13,12 @@ public class TypeAccountService {
     @Autowired
     private TypeAccountRepository typeAccountRepository;
 
-    // CREATE
     public TypeAccountEntity createTypeAccount(String accountType) {
         TypeAccountEntity newType = new TypeAccountEntity();
         newType.setAccountType(accountType);
         return typeAccountRepository.save(newType);
     }
 
-    // READ
     public List<TypeAccountEntity> getAllTypeAccounts() {
         return typeAccountRepository.findAll();
     }
@@ -34,7 +32,6 @@ public class TypeAccountService {
         return typeAccountRepository.findByAccountType(accountType);
     }
 
-    // UPDATE
     public TypeAccountEntity updateTypeAccount(Integer id, String newAccountType) {
         TypeAccountEntity typeAccount = typeAccountRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Type de compte non trouvé"));
@@ -42,12 +39,10 @@ public class TypeAccountService {
         return typeAccountRepository.save(typeAccount);
     }
 
-    // DELETE
     public void deleteTypeAccount(Integer id) {
         typeAccountRepository.deleteById(id);
     }
 
-    // UTILITY
     public boolean existsByAccountType(String accountType) {
         return typeAccountRepository.existsByAccountType(accountType);
     }

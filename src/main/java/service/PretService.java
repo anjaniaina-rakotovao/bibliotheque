@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import utils.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import repository.AdherentRepository;
 import repository.ExemplaireRepository;
 import repository.PretRepository;
 import repository.StatutPretRepository;
+import utils.DateUtil;
 import repository.HistoriquePenaliteRepository;
 import repository.HistoriquePretRepository;
 import repository.ProlongementPretRepository;
@@ -73,7 +75,6 @@ public class PretService {
 
         PretEntity saved = pretRepository.save(pret);
 
-        /* ---- Historique « EnCours » ---- */
         StatutPretEntity statutEnCours = statutPretRepository.findByStatut("EnCours")
                 .orElseThrow(() -> new RuntimeException("Statut « EnCours » introuvable"));
 
@@ -117,12 +118,10 @@ public class PretService {
     public List<PretEntity> findPretsEnCoursParAdherent(Integer idAdherent) {
         List<PretEntity> prets = pretRepository.findByAdherent_IdAdherent(idAdherent);
 
-        // Forcer chargement de la collection historiques pour éviter LazyInitializationException
         for (PretEntity pret : prets) {
             pret.getHistoriques().size();
         }
 
-        // Filtrer prêts dont l'historique contient le statut "EnCours"
         List<PretEntity> pretsEnCours = new ArrayList<>();
         for (PretEntity pret : prets) {
             for (HistoriquePretEntity hist : pret.getHistoriques()) {
@@ -140,153 +139,95 @@ public class PretService {
     // public void effectuerRetour(Integer idPret, LocalDate dateRetour) {
     //     PretEntity pret = pretRepository.findById(idPret)
     //             .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
-    //     /* --- Vérifier qu’il est encore EnCours --- */
     //     if (!isEnCours(pret)) {
     //         throw new RuntimeException("Ce prêt n’est plus en cours.");
     //     }
-    //     /* --- Calcul du délai --- */
-    //     long jours = ChronoUnit.DAYS.between(pret.getDatePret(), dateRetour);
-    //     /* --- Ajouter l’historique “Rendu” --- */
-    //     StatutPretEntity statutRendu = statutPretRepository.findByStatut("Rendu")
-    //             .orElseThrow(() -> new RuntimeException("Statut 'Rendu' manquant"));
-    //     HistoriquePretEntity histo = new HistoriquePretEntity();
-    //     histo.setPret(pret);
-    //     histo.setStatut(statutRendu);
-    //     histo.setDateStatut(dateRetour);
-    //     historiquePretRepository.save(histo);
-    //     /* --- Pénalité si > 28 jours --- */
-    //     if (jours > 28) {
-    //         HistoriquePenaliteEntity pen = new HistoriquePenaliteEntity();
-    //         pen.setAdherent(pret.getAdherent());
-    //         pen.setDateDebutPenalite(dateRetour);
-    //         pen.setDateFinPenalite(dateRetour.plusDays(15));   // ex : 15 jours de blocage
-    //         historiquePenaliteRepository.save(pen);
-    //     }
-    //     /* --- Exemplaire de nouveau disponible ( si tu gères un stock ) --- */
-    //     ExemplaireEntity ex = pret.getExemplaire();
-    //     ex.setNbExemplaire(ex.getNbExemplaire() + 1);
-    //     exemplaireRepository.save(ex);
-    // }
-    // @Transactional
-    // public void effectuerRetour(Integer idPret, LocalDate dateRetour) {
-
-    //     PretEntity pret = pretRepository.findById(idPret)
-    //             .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
-
-    //     /* --- Vérifier qu’il est encore EnCours --- */
-    //     if (!isEnCours(pret)) {
-    //         throw new RuntimeException("Ce prêt n’est plus en cours.");
-    //     }
-
-    //     /* --- Calculer la date de fin effective (incluant prolongements) --- */
     //     LocalDate dateFinEffective = calculerDateFinEffective(pret);
-
-    //     /* --- Calcul du délai entre la date de fin effective et la date de retour --- */
     //     long joursRetard = ChronoUnit.DAYS.between(dateFinEffective, dateRetour);
-
-    //     /* --- Ajouter l’historique “Rendu” --- */
     //     StatutPretEntity statutRendu = statutPretRepository.findByStatut("Rendu")
     //             .orElseThrow(() -> new RuntimeException("Statut 'Rendu' manquant"));
-
     //     HistoriquePretEntity histo = new HistoriquePretEntity();
     //     histo.setPret(pret);
     //     histo.setStatut(statutRendu);
     //     histo.setDateStatut(dateRetour);
     //     historiquePretRepository.save(histo);
-
-    //     /* --- Pénalité si retard (joursRetard > 0) --- */
     //     if (joursRetard > 0) {
+    //         // Durée standard : 15 jours
+    //         int dureePenalite = 15;
+    //         HistoriquePenaliteEntity derniere
+    //                 = historiquePenaliteRepository
+    //                         .findTopByAdherent_IdAdherentOrderByDateFinPenaliteDesc(
+    //                                 pret.getAdherent().getIdAdherent());
+    //         LocalDate debut;
+    //         if (derniere != null && !derniere.getDateFinPenalite().isBefore(dateRetour)) {
+    //             debut = derniere.getDateFinPenalite().plusDays(1);
+    //         } else {
+    //             debut = dateRetour;
+    //         }
+    //         LocalDate fin = debut.plusDays(dureePenalite);
     //         HistoriquePenaliteEntity pen = new HistoriquePenaliteEntity();
     //         pen.setAdherent(pret.getAdherent());
-    //         pen.setDateDebutPenalite(dateRetour);
-    //         pen.setDateFinPenalite(dateRetour.plusDays(15));   
+    //         pen.setDateDebutPenalite(debut);
+    //         pen.setDateFinPenalite(fin);
     //         historiquePenaliteRepository.save(pen);
     //     }
-
-    //     /* --- Exemplaire de nouveau disponible --- */
     //     ExemplaireEntity ex = pret.getExemplaire();
     //     ex.setNbExemplaire(ex.getNbExemplaire() + 1);
     //     exemplaireRepository.save(ex);
     // }
-
     @Transactional
-public void effectuerRetour(Integer idPret, LocalDate dateRetour) {
+    public void effectuerRetour(Integer idPret, LocalDate dateRetour) {
 
-    PretEntity pret = pretRepository.findById(idPret)
-            .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
-
-    if (!isEnCours(pret)) {
-        throw new RuntimeException("Ce prêt n’est plus en cours.");
-    }
-
-    /* ---------- Retard ? ---------- */
-    LocalDate dateFinEffective = calculerDateFinEffective(pret);
-    long joursRetard = ChronoUnit.DAYS.between(dateFinEffective, dateRetour);
-
-    /* ---------- Historique “Rendu” ---------- */
-    StatutPretEntity statutRendu = statutPretRepository.findByStatut("Rendu")
-            .orElseThrow(() -> new RuntimeException("Statut 'Rendu' manquant"));
-
-    HistoriquePretEntity histo = new HistoriquePretEntity();
-    histo.setPret(pret);
-    histo.setStatut(statutRendu);
-    histo.setDateStatut(dateRetour);
-    historiquePretRepository.save(histo);
-
-    /* ---------- Pénalité (s’il y a retard) ---------- */
-    if (joursRetard > 0) {
-        // Durée standard : 15 jours
-        int dureePenalite = 15;
-
-        // Recherche de la dernière pénalité (active ou non)
-        HistoriquePenaliteEntity derniere =
-                historiquePenaliteRepository
-                    .findTopByAdherent_IdAdherentOrderByDateFinPenaliteDesc(
-                            pret.getAdherent().getIdAdherent());
-
-        LocalDate debut;
-        if (derniere != null && !derniere.getDateFinPenalite().isBefore(dateRetour)) {
-            // Il existe déjà une pénalité dont la fin ≥ dateRetour
-            debut = derniere.getDateFinPenalite().plusDays(1);
-        } else {
-            debut = dateRetour;
+        PretEntity pret = pretRepository.findById(idPret)
+                .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+        if (!isEnCours(pret)) {
+            throw new RuntimeException("Ce prêt n’est plus en cours.");
         }
-        LocalDate fin = debut.plusDays(dureePenalite);
 
-        HistoriquePenaliteEntity pen = new HistoriquePenaliteEntity();
-        pen.setAdherent(pret.getAdherent());
-        pen.setDateDebutPenalite(debut);
-        pen.setDateFinPenalite(fin);
-        historiquePenaliteRepository.save(pen);
-    }
-
-    /* ---------- Remettre l’exemplaire disponible ---------- */
-    ExemplaireEntity ex = pret.getExemplaire();
-    ex.setNbExemplaire(ex.getNbExemplaire() + 1);
-    exemplaireRepository.save(ex);
-}
-
-
-    // Méthode utilitaire pour calculer l'âge
-    private int calculateAge(LocalDate naissance, LocalDate dateRef) {
-        if (naissance == null || dateRef == null) {
-            return 0;
+        if (DateUtil.isJourNonOuvre(dateRetour)) {
+            LocalDate prochaine = DateUtil.prochainJourOuvre(dateRetour);
+            throw new RuntimeException(
+                    "Le retour doit se faire un jour ouvrable. Prochain jour ouvrable : " + prochaine);
         }
-        return dateRef.getYear() - naissance.getYear()
-                - (dateRef.getDayOfYear() < naissance.getDayOfYear() ? 1 : 0);
+
+        LocalDate dateFinPrevue = calculerDateFinEffective(pret);
+        LocalDate dateLimite = DateUtil.prochainJourOuvre(dateFinPrevue);
+
+        StatutPretEntity statutRendu = statutPretRepository.findByStatut("Rendu")
+                .orElseThrow(() -> new RuntimeException("Statut 'Rendu' manquant"));
+
+        HistoriquePretEntity histo = new HistoriquePretEntity();
+        histo.setPret(pret);
+        histo.setStatut(statutRendu);
+        histo.setDateStatut(dateRetour);
+        historiquePretRepository.save(histo);
+
+        if (dateRetour.isAfter(dateLimite)) {
+
+            HistoriquePenaliteEntity derniere
+                    = historiquePenaliteRepository
+                            .findTopByAdherent_IdAdherentOrderByDateFinPenaliteDesc(
+                                    pret.getAdherent().getIdAdherent());
+
+            // LocalDate base = (derniere != null)
+            LocalDate dateDebut = (derniere != null)
+                    ? derniere.getDateFinPenalite().plusDays(1)
+                    : dateRetour;
+
+            // LocalDate dateDebut = DateUtil.prochainJourOuvre(
+            //         base.isAfter(dateRetour) ? base : dateRetour);
+            HistoriquePenaliteEntity pen = new HistoriquePenaliteEntity();
+            pen.setAdherent(pret.getAdherent());
+            pen.setDateDebutPenalite(dateDebut);
+            pen.setDateFinPenalite(DateUtil.prochainJourOuvre(dateDebut.plusDays(15)));
+            historiquePenaliteRepository.save(pen);
+        }
+
+        ExemplaireEntity ex = pret.getExemplaire();
+        ex.setNbExemplaire(ex.getNbExemplaire() + 1);
+        exemplaireRepository.save(ex);
     }
 
-    // public boolean isEnCours(PretEntity pret) {
-    //     if (pret.getHistoriques() == null || pret.getHistoriques().isEmpty()) {
-    //         return false;
-    //     }
-    //     // Dernier statut = celui avec la date la plus récente
-    //     HistoriquePretEntity dernier = pret.getHistoriques().stream()
-    //             .max(Comparator.comparing(HistoriquePretEntity::getDateStatut))
-    //             .orElse(null);
-    //     // Statut ID = 1 → "EnCours"
-    //     return dernier != null && dernier.getStatut().getIdStatut() == 1;
-    // }
     private boolean isEnCours(PretEntity pret) {
         return pret.getHistoriques().stream()
                 .max(Comparator.comparing(HistoriquePretEntity::getDateStatut))
@@ -309,12 +250,10 @@ public void effectuerRetour(Integer idPret, LocalDate dateRetour) {
     }
 
     public LocalDate calculerDateFinEffective(PretEntity pret) {
-        // 1. durée initiale selon le type de prêt
         int dureeInitiale = 28;
         LocalDate datePret = pret.getDatePret();
         LocalDate dateFin = datePret.plusDays(dureeInitiale);
 
-        // 2. ajouter les prolongements si existants
         List<ProlongementPretEntity> prolongements = prolongementPretRepository.findAll()
                 .stream().filter(p -> p.getPret().getIdPret().equals(pret.getIdPret()))
                 .toList();
@@ -340,13 +279,11 @@ public void effectuerRetour(Integer idPret, LocalDate dateRetour) {
             throw new RuntimeException("Prolongation entre 1 et 30 jours.");
         }
 
-        // Historiser la prolongation
         ProlongementPretEntity prolong = new ProlongementPretEntity();
         prolong.setPret(pret);
         prolong.setDuree(dureeJours);
         prolongementPretRepository.save(prolong);
 
-        // Retourner la nouvelle date de fin (en recalculant)
         return calculerDateFinEffective(pret);
     }
 
