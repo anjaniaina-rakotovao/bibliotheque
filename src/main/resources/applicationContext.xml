@@ -14,6 +14,7 @@
 >
     <bean id="adherentService" class="service.AdherentService" />
     <bean id="livreService" class="service.LivreService" />
+    <bean id="livreProfilService" class="service.LivreProfilService" />
     <bean id="categorieAgeService" class="service.CategorieAgeService" />
     <bean id="exemplaireService" class="service.ExemplaireService" />
     <bean id="tagService" class="service.TagService" />
@@ -28,6 +29,10 @@
     <bean id="statutPretService" class="service.StatutPretService" />
     <bean id="historiquePenaliteService" class="service.HistoriquePenaliteService" />
     <bean id="prolongementPretService" class="service.ProlongementPretService" />
+    <bean id="ReservationService" class="service.ReservationService" />
+    <bean id="HistoriqueReservationService" class="service.HistoriqueReservationService" />
+
+
 
 
 

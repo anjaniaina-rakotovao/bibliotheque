@@ -22,11 +22,6 @@ public class ReservationEntity {
     @Column(name = "dateReservation")
     private LocalDate dateReservation;
 
-    @Column(name = "statut")
-    private String statut;
-
-    @Column(name = "expiration")
-    private LocalDate expiration;
 
     public ReservationEntity() {}
 
@@ -62,19 +57,5 @@ public class ReservationEntity {
         this.dateReservation = dateReservation;
     }
 
-    public String getStatut() {
-        return statut;
-    }
-
-    public void setStatut(String statut) {
-        this.statut = statut;
-    }
-
-    public LocalDate getExpiration() {
-        return expiration;
-    }
-
-    public void setExpiration(LocalDate expiration) {
-        this.expiration = expiration;
-    }
+   
 }

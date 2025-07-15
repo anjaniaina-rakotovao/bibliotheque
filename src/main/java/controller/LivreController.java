@@ -6,23 +6,33 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import entities.LivreEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import service.LivreService;
 import java.util.List;
-import org.springframework.ui.Model;
+import java.util.Map;
 
+import org.springframework.ui.Model;
 
 @Controller
 public class LivreController {
+
     @Autowired
     private LivreService tagService;
 
     @RequestMapping(value = "/listelivre", method = RequestMethod.GET)
-    public String listerLivre(Model model){
+    public String listerLivre(Model model) {
         List<LivreEntity> tags = tagService.findAll();
         model.addAttribute("listLivre", tags);
         return "list-livre";
     }
+
+    @GetMapping("/livres-stats")
+    @ResponseBody
+    public List<Map<String, Object>> getStatistiquesLivres() {
+        return tagService.getLivresAvecStatistiques();
+    }
+
 }

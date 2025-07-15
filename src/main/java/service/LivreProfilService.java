@@ -3,10 +3,12 @@ package service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import entities.LivreProfilEntity;
+import entities.PretEntity;
 import repository.LivreProfilRepository;
 
 public class LivreProfilService {
 
+    @Autowired
     private LivreProfilRepository livreProfilRepository;
 
     @Autowired
@@ -26,11 +28,16 @@ public class LivreProfilService {
         livreProfilRepository.deleteById(id);
     }
 
+    public LivreProfilEntity findById(Integer idLivreProfil) {
+        return livreProfilRepository.findById(idLivreProfil)
+                .orElseThrow(() -> new RuntimeException("Livre profil introuvable avec l’ID : " + idLivreProfil));
+    }
+
 //     public List<LivreProfilEntity> findByProfil(Integer idProfil) {
 //         return livreProfilRepository.findByProfil_IdProfil(idProfil);
 //     }
 
-//     public List<LivreProfilEntity> findByLivre(Integer idLivre) {
-//         return livreProfilRepository.findByLivre_IdLivre(idLivre);
-//     }
+    public List<LivreProfilEntity> findByLivre(Integer idLivre) {
+        return livreProfilRepository.findByLivre_IdLivre(idLivre);
+    }
 }

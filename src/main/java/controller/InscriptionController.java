@@ -65,9 +65,14 @@ public class InscriptionController {
         return "login";
     }
 
-     @RequestMapping(value = "/accueil", method = RequestMethod.GET)
+    @RequestMapping(value = "/accueil", method = RequestMethod.GET)
     public String showForm(Model model) {
         return "accueil";
+    }
+
+    @RequestMapping(value = "/accueilAdmin", method = RequestMethod.GET)
+    public String showForm2(Model model) {
+        return "accueilAdmin";
     }
 
     
@@ -89,7 +94,14 @@ public class InscriptionController {
                 UsersEntity user = usersService.getUserByCredentials(username, motdepasse)
                         .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
                 request.getSession().setAttribute("currentUser", user);
+                TypeAccountEntity t = user.getTypeAccount();
+                if (t.getIdTypeAccount() == 2) {
+                    return "accueil";
+                } else if (t.getIdTypeAccount() == 3) {
+                    return "accueilAdmin";
+                }
                 return "accueil";
+
             } else {
                 model.addAttribute("error", "Identifiants incorrects");
                 return "login";

@@ -1,5 +1,7 @@
 package entities;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +14,12 @@ public class ProlongementPretEntity {
 
     @Column(name = "duree")
     private Integer duree;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "dateProlongement")
+    private LocalDate dateProlongement;
 
     @ManyToOne
     @JoinColumn(name = "idPret")
@@ -41,5 +49,21 @@ public class ProlongementPretEntity {
 
     public void setPret(PretEntity pret) {
         this.pret = pret;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDate getDateProlongement() {
+        return dateProlongement;
+    }
+
+    public void setDateProlongement(LocalDate dateProlongement) {
+        this.dateProlongement = dateProlongement;
     }
 }

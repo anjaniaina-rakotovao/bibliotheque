@@ -29,7 +29,7 @@ public class ExemplaireService {
         exemplaireRepository.deleteById(id);
     }
 
-        public ExemplaireEntity getExemplaireDisponible(Integer idLivre) {
+    public ExemplaireEntity getExemplaireDisponible(Integer idLivre) {
         List<ExemplaireEntity> liste = exemplaireRepository.findByLivre_IdLivre(idLivre);
         for (ExemplaireEntity ex : liste) {
             long empruntes = pretRepository
@@ -39,9 +39,8 @@ public class ExemplaireService {
                 return ex;
             }
         }
-        return null; // aucun disponible
-
-        
+        return null; 
     }
+    
 
 }

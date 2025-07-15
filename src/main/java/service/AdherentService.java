@@ -16,10 +16,9 @@ public class AdherentService {
     @Autowired
     private HistoriquePenaliteRepository historiquePenaliteRepository;
 
-    @Autowired                       // ← AJOUT
+    @Autowired
     private PretService pretService;
 
-    /* --- CRUD simples --- */
     public List<AdherentEntity> findAll() {
         return adherentRepository.findAll();
     }
@@ -32,7 +31,6 @@ public class AdherentService {
         adherentRepository.deleteById(id);
     }
 
-    /* --- manquant : findById --- */
     public AdherentEntity findById(Integer id) {
         return adherentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Adhérent introuvable"));
@@ -51,15 +49,13 @@ public class AdherentService {
 //                           .getProfil().getQuotaPret();
 //     return nbActifs >= quota;
 // }
+
     public boolean aUnePenaliteActive(Integer idAdh, LocalDate date) {
         return historiquePenaliteRepository
                 .existsByAdherent_IdAdherentAndDateDebutPenaliteLessThanEqualAndDateFinPenaliteGreaterThanEqual(
                         idAdh, date, date);
     }
 
-    /**
-     * Vrai si le quota de prêts “EnCours” est atteint
-     */
     public boolean quotaDepasse(Integer idAdh) {
         long nbActifs = pretService.countPretsActifs(idAdh);  // ← OK
         int quota = findById(idAdh).getProfil().getQuotaPret();
