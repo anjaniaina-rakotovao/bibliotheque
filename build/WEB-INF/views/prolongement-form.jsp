@@ -46,7 +46,7 @@
                                                     }
 
                                                     .nav-container {
-                                                        max-width: 1200px;
+                                                        /* max-width: 1200px; */
                                                         margin: 0 auto;
                                                         display: flex;
                                                         justify-content: space-between;
@@ -461,9 +461,12 @@
                                                                     Livres</a></li>
                                                             <li><a href="retour" class="nav-link">Retour de Livre</a>
                                                             </li>
-                                                            <li><a href="createPret" class="nav-link">Prêter un
+                                                            <li><a href="createPret" class="nav-link">Preter un
                                                                     livre</a></li>
-                                                            <li><a href="prolongement" class="nav-link">Faire un prolongement</a></li>
+                                                            <li><a href="prolongement" class="nav-link">Faire un
+                                                                    prolongement</a></li>
+                                                            <li><a href="createReservation" class="nav-link">Faire un
+                                                                    reservation</a></li>
                                                         </ul>
                                                     </div>
                                                 </nav>
@@ -532,6 +535,12 @@
                                                                 <div class="form-group">
                                                                     <label>Durée supplémentaire (jours) :</label>
                                                                     <input type="number" name="duree"
+                                                                        class="form-control" min="1" max="30" required>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label>Date de demande de prolongement:</label>
+                                                                    <input type="date" name="dateProlongement"
                                                                         class="form-control" min="1" max="30" required>
                                                                 </div>
 

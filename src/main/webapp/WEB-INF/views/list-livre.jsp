@@ -43,7 +43,7 @@
                                 }
 
                                 .nav-container {
-                                    max-width: 1200px;
+                                    /* max-width: 1200px; */
                                     margin: 0 auto;
                                     display: flex;
                                     justify-content: space-between;
@@ -450,13 +450,13 @@
                                 <div class="nav-container">
                                     <a href="accueil" class="nav-logo">📚 Bibliothèque</a>
                                     <ul class="nav-menu">
-                                        <li><a href="accueil" class="nav-link">Accueil</a></li>
-                                        <li><a href="creationAdherent" class="nav-link">Nouveau Adhérent</a></li>
-                                        <li><a href="listelivre" class="nav-link">Liste des Livres</a></li>
-                                        <li><a href="retour" class="nav-link">Retour de Livre</a></li>
-                                        <li><a href="createPret" class="nav-link">Preter un livre</a></li>
-                                        <li><a href="prolongement" class="nav-link">Faire un prolongement</a></li>
-
+                                    <li><a href="accueil" class="nav-link">Accueil</a></li>
+                                    <li><a href="creationAdherent" class="nav-link">Nouveau Adhérent</a></li>
+                                    <li><a href="listelivre" class="nav-link">Liste des Livres</a></li>
+                                    <li><a href="retour" class="nav-link">Retour de Livre</a></li>
+                                    <li><a href="createPret" class="nav-link">Preter un livre</a></li>
+                                    <li><a href="prolongement" class="nav-link">Faire un prolongement</a></li>
+                                    <li><a href="createReservation" class="nav-link">Faire un reservation</a></li>
                                     </ul>
                                 </div>
                             </nav>

@@ -22,8 +22,10 @@ INSERT INTO profil (profilType, quotaPret) VALUES
 
 INSERT INTO statutAdherent(statut) VALUES
 ('Actif'),
--- ('Penalite'),
 ('Innactif');
+
+INSERT INTO statutPret (statut) VALUES ('EnCours');
+INSERT INTO statutPret (statut) VALUES ('Rendu');
 
 INSERT INTO categorieAge (ageMin, ageMax) VALUES
 (0, 10),    -- 1: Jeunesse
@@ -87,9 +89,6 @@ INSERT INTO exemplaire (idLivre, nbExemplaire) VALUES
 (8, 4),   
 (9, 3),   
 (10, 10); 
-
-INSERT INTO statutPret (statut) VALUES ('EnCours');
-INSERT INTO statutPret (statut) VALUES ('Rendu');
 
 INSERT INTO livreProfil (idLivre, idProfil)
 SELECT idLivre, idProfil FROM livre, profil

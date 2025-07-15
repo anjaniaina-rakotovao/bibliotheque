@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface PretRepository extends JpaRepository<PretEntity, Integer> {
 
+    List<PretEntity> findByExemplaire_IdExemplaire(Integer idExemplaire);
+
     List<PretEntity> findByAdherent_IdAdherentAndHistoriques_Statut_Statut(
             Integer idAdherent, String statut);
 

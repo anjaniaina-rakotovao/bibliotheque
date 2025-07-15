@@ -22,6 +22,8 @@ public class ProlongementController {
     private AdherentService adherentService;
     @Autowired
     private PretService pretService;
+    @Autowired
+    private ProlongementPretService prolongementPretService;
 
     @GetMapping("/prolongement")
     public String pageProlongement(HttpServletRequest req) {
@@ -50,13 +52,13 @@ public class ProlongementController {
         return "prolongement-form";
     }
 
-    /* Étape 3 : confirmer la prolongation */
     @PostMapping("/confirmerProlongement")
     public String confirmer(HttpServletRequest req, Model model) {
         try {
             Integer idPret = Integer.parseInt(req.getParameter("idPret"));
             Integer duree = Integer.parseInt(req.getParameter("duree"));
-            LocalDate nouvelle = pretService.prolongerPret(idPret, duree);
+            LocalDate dateProlongement = LocalDate.parse(req.getParameter("dateProlongement"));
+            LocalDate nouvelle = pretService.prolongerPret(idPret, duree, dateProlongement);
 
             model.addAttribute("messageSuccess",
                     "Prêt prolongé jusqu'au " + nouvelle + ".");
@@ -65,5 +67,29 @@ public class ProlongementController {
         }
         req.setAttribute("listAdherent", adherentService.findAll());
         return "prolongement-form";
+    }
+
+
+
+    @GetMapping("/prolongementAdmin")
+    public String pageProlongementAdmin(HttpServletRequest req) {
+        req.setAttribute("listProlongement", prolongementPretService.getDerniersProlongementsEnAttenteParPret());
+        return "form-admin-prolongement";
+    }
+
+    @PostMapping("/confirmerProlongementAdmin")
+    public String confirmerAdmin(HttpServletRequest req, Model model) {
+        try {
+            Integer idProlongement = Integer.parseInt(req.getParameter("idProlongement"));
+            LocalDate dateValidation = LocalDate.parse(req.getParameter("dateValidation"));
+            prolongementPretService.confirmProlongement(idProlongement, dateValidation);
+
+            model.addAttribute("messageSuccess",
+                    "Prolongement confirmé.");
+        } catch (Exception e) {
+            model.addAttribute("messageError", e.getMessage());
+        }
+        req.setAttribute("listProlongement", prolongementPretService.getDerniersProlongementsEnAttenteParPret());
+        return "form-admin-prolongement";
     }
 }

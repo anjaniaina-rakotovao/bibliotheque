@@ -38,6 +38,9 @@ public class PretController {
     @Autowired
     private HistoriquePretService historiquePretService;
 
+    @Autowired
+    private LivreProfilService livreProfilService;
+
     @RequestMapping(value = "/createPret", method = RequestMethod.GET)
     public String listerUtilities(Model model) {
         List<LivreEntity> tags = livreService.findAll();
@@ -61,68 +64,158 @@ public class PretController {
         LivreEntity livre = livreService.findById(idLivre);
         TypePretEntity typePret = typePretService.findById(idTypePret);
 
-        try {
-            // 🔐 Règle 1 : Adhérent actif
-            if (adherent == null || adherent.getStatut().getIdStatut().equals(2)) {
-                throw new RuntimeException("L’adhérent est inactif ou introuvable.");
+        if (idTypePret == 2) {
+            try {
+                //  Règle 1 : Adhérent actif
+                if (adherent == null || adherent.getStatut().getIdStatut().equals(2)) {
+                    throw new RuntimeException("L’adhérent est inactif ou introuvable.");
+                }
+
+                //  Règle 2 : Âge minimum requis
+                int age = java.time.Period.between(adherent.getDateNaissance(), datePret).getYears();
+                CategorieAgeEntity catAge = livre.getCategorieAge();
+                if (age < catAge.getAgeMin()) {
+                    throw new RuntimeException("L’adhérent est trop jeune pour emprunter ce livre.");
+                }
+
+                //  Règle 3 : Pénalité active (à adapter selon ton design exact)
+                if (adherentService.aUnePenaliteActive(idAdherent, datePret)) {
+                    throw new RuntimeException("L’adhérent a une pénalité active.");
+                }
+
+                //  Règle 4 : Quotas de prêt
+                int quotaAutorisé = adherent.getProfil().getQuotaPret();
+                long nbPretsActifs = pretService.countPretsActifs(idAdherent);
+
+                if (nbPretsActifs >= quotaAutorisé) {
+                    throw new RuntimeException("L’adhérent a atteint son quota de prêts actifs.");
+                }
+
+                //  Règle 5 : Disponibilité de l’exemplaire
+                ExemplaireEntity exemplaireDispo = exemplaireService.getExemplaireDisponible(idLivre);
+                if (exemplaireDispo == null) {
+                    throw new RuntimeException("Aucun exemplaire disponible pour ce livre.");
+                }
+
+                //  Règle 6 : Autorisation pour le type de profil
+                List<LivreProfilEntity> livreProfils = livreProfilService.findByLivre(idLivre);
+
+                boolean profilAutorise = false;
+                for (LivreProfilEntity lp : livreProfils) {
+                    if (lp.getProfil().getIdProfil().equals(adherent.getProfil().getIdProfil())) {
+                        profilAutorise = true;
+                        break;
+                    }
+                }
+
+                if (!profilAutorise) {
+                    throw new RuntimeException("Votre profil ne peut pas accéder à ce livre.");
+                }
+
+                //  Enregistrement du prêt
+                PretEntity pret = new PretEntity();
+                pret.setAdherent(adherent);
+                pret.setExemplaire(exemplaireDispo);
+                pret.setDatePret(datePret);
+                pret.setTypePret(typePret);
+
+                // Sauvegarde
+                // PretEntity pretEnregistre = pretService.save(pret);
+                PretEntity pretEnregistre = pretService.creerPret(adherent, exemplaireDispo, typePret, datePret);
+                //  Historique statut "EnCours"
+                StatutPretEntity statutEnCours = new StatutPretEntity();
+                statutEnCours.setIdStatut(1); // ou récupérer depuis service
+                HistoriquePretEntity historique = new HistoriquePretEntity();
+                historique.setPret(pretEnregistre);
+                historique.setStatut(statutEnCours);
+                historique.setDateStatut(datePret);
+                historiquePretService.save(historique);
+
+                model.addAttribute("messageSuccess", "Prêt créé avec succès.");
+                return "accueil";
+
+            } catch (RuntimeException e) {
+                model.addAttribute("messageError", "Erreur : " + e.getMessage());
+                model.addAttribute("listLivre", livreService.findAll());
+                model.addAttribute("listTypePret", typePretService.findAll());
+                model.addAttribute("listAdherent", adherentService.findAll());
+                return "pret-form";
             }
+        } else if (idTypePret == 1) {
+            try {
+                // Règle 1 : Adhérent actif
+                if (adherent == null || adherent.getStatut().getIdStatut().equals(2)) {
+                    throw new RuntimeException("L’adhérent est inactif ou introuvable.");
+                }
 
-            // 🔐 Règle 2 : Âge minimum requis
-            int age = java.time.Period.between(adherent.getDateNaissance(), datePret).getYears();
-            CategorieAgeEntity catAge = livre.getCategorieAge();
-            if (age < catAge.getAgeMin()) {
-                throw new RuntimeException("L’adhérent est trop jeune pour emprunter ce livre.");
+                // Règle 2 : Âge minimum requis
+                int age = java.time.Period.between(adherent.getDateNaissance(), datePret).getYears();
+                CategorieAgeEntity catAge = livre.getCategorieAge();
+                if (age < catAge.getAgeMin()) {
+                    throw new RuntimeException("L’adhérent est trop jeune pour emprunter ce livre.");
+                }
+
+                // Règle 3 : Pénalité active (à adapter selon ton design exact)
+                if (adherentService.aUnePenaliteActive(idAdherent, datePret)) {
+                    throw new RuntimeException("L’adhérent a une pénalité active.");
+                }
+
+                // Règle 5 : Disponibilité de l’exemplaire
+                ExemplaireEntity exemplaireDispo = exemplaireService.getExemplaireDisponible(idLivre);
+                if (exemplaireDispo == null) {
+                    throw new RuntimeException("Aucun exemplaire disponible pour ce livre.");
+                }
+                
+                //  Règle 6 : Autorisation pour le type de profil
+                List<LivreProfilEntity> livreProfils = livreProfilService.findByLivre(idLivre);
+
+                boolean profilAutorise = false;
+                for (LivreProfilEntity lp : livreProfils) {
+                    if (lp.getProfil().getIdProfil().equals(adherent.getProfil().getIdProfil())) {
+                        profilAutorise = true;
+                        break;
+                    }
+                }
+
+                if (!profilAutorise) {
+                    throw new RuntimeException("Votre profil ne peut pas accéder à ce livre.");
+                }
+                
+                //  Enregistrement du prêt
+                PretEntity pret = new PretEntity();
+                pret.setAdherent(adherent);
+                pret.setExemplaire(exemplaireDispo);
+                pret.setDatePret(datePret);
+                pret.setTypePret(typePret);
+
+                // Sauvegarde
+                // PretEntity pretEnregistre = pretService.save(pret);
+                PretEntity pretEnregistre = pretService.creerPretPlace(adherent, exemplaireDispo, typePret, datePret);
+                //  Historique statut "EnCours"
+                StatutPretEntity statutEnCours = new StatutPretEntity();
+                statutEnCours.setIdStatut(2); // ou récupérer depuis service
+                HistoriquePretEntity historique = new HistoriquePretEntity();
+                historique.setPret(pretEnregistre);
+                historique.setStatut(statutEnCours);
+                historique.setDateStatut(datePret);
+                historiquePretService.save(historique);
+
+                model.addAttribute("messageSuccess", "Prêt créé avec succès.");
+                return "accueil";
+
+            } catch (RuntimeException e) {
+                model.addAttribute("messageError", "Erreur : " + e.getMessage());
+                model.addAttribute("listLivre", livreService.findAll());
+                model.addAttribute("listTypePret", typePretService.findAll());
+                model.addAttribute("listAdherent", adherentService.findAll());
+                return "pret-form";
             }
-
-            // 🔐 Règle 3 : Pénalité active (à adapter selon ton design exact)
-            if (adherentService.aUnePenaliteActive(idAdherent, datePret)) {
-                throw new RuntimeException("L’adhérent a une pénalité active.");
-            }
-
-            // 🔐 Règle 4 : Quotas de prêt
-            int quotaAutorisé = adherent.getProfil().getQuotaPret();
-           long nbPretsActifs = pretService.countPretsActifs(idAdherent);
-
-            if (nbPretsActifs >= quotaAutorisé) {
-                throw new RuntimeException("L’adhérent a atteint son quota de prêts actifs.");
-            }
-
-            // 🔐 Règle 5 : Disponibilité de l’exemplaire
-            ExemplaireEntity exemplaireDispo = exemplaireService.getExemplaireDisponible(idLivre);
-            if (exemplaireDispo == null) {
-                throw new RuntimeException("Aucun exemplaire disponible pour ce livre.");
-            }
-
-            // 🔁 Enregistrement du prêt
-            PretEntity pret = new PretEntity();
-            pret.setAdherent(adherent);
-            pret.setExemplaire(exemplaireDispo);
-            pret.setDatePret(datePret);
-            pret.setTypePret(typePret);
-
-            // Sauvegarde
-            // PretEntity pretEnregistre = pretService.save(pret);
-            PretEntity pretEnregistre = pretService.creerPret(adherent, exemplaireDispo, typePret, datePret);
-            // 🔁 Historique statut "EnCours"
-            StatutPretEntity statutEnCours = new StatutPretEntity();
-            statutEnCours.setIdStatut(1); // ou récupérer depuis service
-            HistoriquePretEntity historique = new HistoriquePretEntity();
-            historique.setPret(pretEnregistre);
-            historique.setStatut(statutEnCours);
-            historique.setDateStatut(datePret);
-            historiquePretService.save(historique);
-
-            model.addAttribute("messageSuccess", "Prêt créé avec succès.");
-            return "accueil";
-
-        } catch (RuntimeException e) {
-            model.addAttribute("messageError", "Erreur : " + e.getMessage());
-            model.addAttribute("listLivre", livreService.findAll());
-            model.addAttribute("listTypePret", typePretService.findAll());
-            model.addAttribute("listAdherent", adherentService.findAll());
-            return "pret-form";
         }
-
+        model.addAttribute("messageError", "Seuls les prêts de type sur palce ou emporté sont traités ici.");
+        model.addAttribute("listLivre", livreService.findAll());
+        model.addAttribute("listTypePret", typePretService.findAll());
+        model.addAttribute("listAdherent", adherentService.findAll());
+        return "pret-form";
     }
 
 }
